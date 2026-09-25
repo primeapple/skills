@@ -36,22 +36,25 @@ Use the smallest useful scan. Widen it only when the first pass produces no cand
 
 ### 2. Hunt for high-leverage finish lines
 
-Look for these signals, in roughly this order:
+Look for these signals, in roughly this order. Assign each candidate one primary category; use implementation tactics as tags rather than additional categories:
 
-- dead dependencies, scripts, configuration, code, exports, feature flags, assets, and generated artifacts;
-- an old migration with an obvious remaining step, compatibility shim, dual path, or fallback;
-- a dependency that is substantially behind, has a security/maintenance cost, or can be removed with native/platform code;
-- duplicated or unreachable behavior in recently changed hot paths;
-- missing tests at a high-value boundary, especially a regression test for a real bug or a frequently modified path;
-- impure seams whose small pure extraction makes behavior easier to verify without adding abstraction;
-- slow or flaky tooling with a local, measurable fix;
-- stale comments, documents, examples, or tests that encode implementation details instead of user-visible behavior.
+- **Removal and consolidation**: dead dependencies, scripts, configuration, code, exports, feature flags, assets, generated artifacts, duplicated behavior, unreachable paths, or redundant fallbacks;
+- **Migration completion**: an old migration with an obvious remaining step, compatibility shim, dual path, or fallback;
+- **Dependency maintenance**: a dependency that is substantially behind or has a security or maintenance cost; check changelog/release notes and compatibility before proposing an upgrade;
+- **Regression and boundary coverage**: missing tests at a high-value boundary, especially a regression test for a real bug or a frequently modified path;
+- **Testability and boundary simplification**: an impure seam where a small pure extraction or explicit boundary makes behavior easier to verify without adding abstraction;
+- **Developer and CI feedback loops**: slow, flaky, noisy, or nondeterministic tooling with a local, measurable fix;
+- **Reliability and failure-path fixes**: swallowed errors, unsafe fallbacks, missing timeout or recovery handling, nondeterminism, or poor handling of partial or corrupt input;
+- **Security and privacy hardening**: unsafe logging, overly broad permissions, insecure defaults, missing boundary validation, or obsolete credential/configuration paths;
+- **Contract and documentation drift**: stale comments, documents, examples, tests, or generated output that encode implementation details or incorrect project behavior.
+
+Do not propose user-facing behavior, UX, accessibility, or product changes. Those require stakeholder discussion. Runtime performance work is in scope only when it has a measurable, local implementation fix and does not change product behavior or require a product decision.
 
 For removal claims, prove absence across imports/references, scripts, configuration, dynamic loading, generated files, and documented commands. For migration claims, identify both the old and new paths and the exact final deletion or switch. For dependency upgrades, check changelog/release notes and compatibility rather than treating version age as proof of value.
 
 ### 3. Score candidates
 
-Create 3–5 candidates, then rank them. Prefer a mix of categories (dependency, deletion, migration, tests, tooling, purity, docs) when each candidate clears the evidence bar. Do not add a weak candidate just to fill a category. Score each dimension 1–5:
+Create 3–5 candidates, then rank them. Prefer a mix of primary categories when each candidate clears the evidence bar. Do not add a weak candidate just to fill a category. Each candidate has one primary category; record implementation tactics separately as tags. Score each dimension 1–5:
 
 - **Impact**: user benefit, reliability, security, performance, or maintainer reach.
 - **Reach**: how many users, runs, packages, or contributors benefit.
@@ -66,22 +69,28 @@ Show every estimate and also calculate a transparent ranking score:
 
 `leverage = impact × reach × confidence × finishability × entropy reduction`
 
-Divide leverage by `cost × risk`. Apply recency as a moderate multiplier, not a gate. Use judgment when the numbers mislead, and explain the override. Tie-break in this order: confidence, entropy reduction, reach, finishability, then recency. A recent change is a relevance signal, not permission to make a risky change. Do not recommend a high-risk item merely because its impact is large.
+Divide leverage by `cost × risk`. Do not include recency in the formula. Recent changes may not have been fleshed out yet; use recency only as contextual evidence and a tie-breaker after confidence, entropy reduction, reach, and finishability. A recent change is a relevance signal, not permission to make a risky change. Do not recommend a high-risk item merely because its impact is large.
+
+Candidate must reduce entropy, prevent regression, or produce a measurable benefit. Entropy reduction gets extra weight when otherwise comparable.
 
 ### 4. Present proposals
 
 Show no more than five. Lead with the top recommendation. Each proposal must contain:
 
+- **Category**: one primary category from the search taxonomy.
+- **Tags**: implementation tactics such as deletion, migration, extraction, test, or dependency change.
 - **Title**: action + concrete target.
 - **Evidence**: commands, history, references, or measurements and what they establish.
 - **Change**: exact files/symbols/dependency and the smallest viable diff.
-- **Benefit**: who gains and how this lowers system entropy.
-- **Scores**: impact, reach, confidence, recency, finishability, entropy reduction, cost, risk.
+- **Benefit**: who gains and how this reduces entropy, prevents regression, or produces a measurable benefit.
+- **Scores**: impact, reach, confidence, recency, finishability, entropy reduction, cost, risk. Recency is reported but does not enter the formula.
 - **Verification**: tests, static checks, benchmark, build, or runtime check that would catch failure.
 - **Residual risk**: what remains uncertain and how to contain it.
 - **PR shape**: expected title, files touched, and whether a migration note or release note is needed.
 
 State clearly when evidence is incomplete. “Possibly unused” is an investigation lead, not a proposal to delete.
+
+If a candidate does not clear the bar, classify it as **Not an easy win** and state the reason: insufficient evidence, broad scope, high rollout risk, local-only benefit, work already in flight, cosmetic value, or need for an architecture decision. Do not disguise a near-miss as a proposal.
 
 Ask the user to choose one candidate. Do not edit code or create a branch during scanning. If the working tree is dirty, scan and report candidates but refuse implementation until a clean baseline exists.
 
@@ -94,7 +103,7 @@ After the user chooses:
 3. Write the smallest change. Add or adjust tests at the observable behavior boundary. Remove implementation-detail tests only when surviving tests still cover the contract.
 4. Run focused checks first, then the repository’s required lint, type, build, and test commands. Report failures as failures; do not weaken checks to get green.
 5. Re-scan for reintroduction: old imports, compatibility paths, references, docs, lockfile entries, generated output, and dead tests. For removals, confirm the removed thing is absent and the build still works.
-6. Commit one coherent change, push the branch, and open a PR using repository conventions. PR title and body must contain a small **What** and **Why**, plus evidence, verification, risk, and entropy reduction. Mark the description as **AI generated**. Never bundle a second cleanup into the PR.
+6. Commit one coherent change, push the branch, and open a PR using repository conventions. PR title and body must contain a small **What** and **Why**, plus evidence, verification, risk, and entropy reduction. Mark the description as **AI generated**. Never bundle a second cleanup into the PR. If the repository does not use PRs or remote access is unavailable, leave the focused patch and report the exact remaining handoff instead.
 
 If no candidate clears the evidence and risk bar, report “no easy win found” and show the strongest near-misses with the evidence they lack. Do not force a daily proposal.
 
