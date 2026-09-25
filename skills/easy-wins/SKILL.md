@@ -54,7 +54,7 @@ For removal claims, prove absence across imports/references, scripts, configurat
 
 ### 3. Score candidates
 
-Create 3–5 candidates, then rank them. Prefer a mix of primary categories when each candidate clears the evidence bar. Do not add a weak candidate just to fill a category. Each candidate has one primary category; record implementation tactics separately as tags. Score each dimension 1–5:
+Create exactly 5 candidates, then rank them. Every candidate must clear the evidence bar and be a genuine easy win; keep searching or widen the scan when needed rather than padding the list with weak candidates. Prefer a mix of primary categories when each candidate qualifies. Each candidate has one primary category; record implementation tactics separately as tags. Score each dimension 1–5:
 
 - **Impact**: user benefit, reliability, security, performance, or maintainer reach.
 - **Reach**: how many users, runs, packages, or contributors benefit.
@@ -75,7 +75,7 @@ Candidate must reduce entropy, prevent regression, or produce a measurable benef
 
 ### 4. Present proposals
 
-Show no more than five. Lead with the top recommendation. Each proposal must contain:
+Show exactly five. Lead with the top recommendation. Each proposal must contain:
 
 - **Category**: one primary category from the search taxonomy.
 - **Tags**: implementation tactics such as deletion, migration, extraction, test, or dependency change.
@@ -89,8 +89,6 @@ Show no more than five. Lead with the top recommendation. Each proposal must con
 - **PR shape**: expected title, files touched, and whether a migration note or release note is needed.
 
 State clearly when evidence is incomplete. “Possibly unused” is an investigation lead, not a proposal to delete.
-
-If a candidate does not clear the bar, classify it as **Not an easy win** and state the reason: insufficient evidence, broad scope, high rollout risk, local-only benefit, work already in flight, cosmetic value, or need for an architecture decision. Do not disguise a near-miss as a proposal.
 
 Ask the user to choose one candidate. Do not edit code or create a branch during scanning. If the working tree is dirty, scan and report candidates but refuse implementation until a clean baseline exists.
 
