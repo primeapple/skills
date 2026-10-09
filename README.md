@@ -21,6 +21,21 @@ Find and rank evidence-backed, high-leverage codebase improvements, then impleme
 npx skills add primeapple/skills -g --skill easy-wins
 ```
 
+## `browser`
+Browser testing/debugging with Chrome DevTools MCP. Manual-only; in Pi, invoke `/skill:browser`.
+
+```sh
+npx skills add primeapple/skills -g --skill browser
+```
+
+Optional local site/repo index: `~/.agents/browser/sites.md`. List match conditions and paths to instruction files, for example:
+
+```md
+- Exact hostname `app.example.test` or repository `/path/to/repo`: read [app.md](app.md).
+```
+
+Keep index and site files outside this repository. No match or index uses generic browser checks. Console checks compare against a baseline; pre-existing noise is non-blocking unless it prevents testing.
+
 ## `code-review`
 Review code changes with evidence-backed, actionable findings and a bias toward simpler designs.
 
