@@ -1,6 +1,6 @@
 ---
 name: browser
-description: Browser testing and debugging with Chrome DevTools MCP and local site/repo instructions.
+description: Browser testing and debugging with Chrome DevTools MCP.
 disable-model-invocation: true
 ---
 
@@ -8,13 +8,13 @@ disable-model-invocation: true
 
 Use Chrome DevTools MCP for the requested browser task. Stay within the requested scope; use the existing MCP connection.
 
-## 1. Load local instructions
+## Site-specific context
 
-If `~/.agents/browser/sites.md` exists, read it before browser actions. It lists site/repo match conditions and paths to additional instructions outside this skill. Resolve `~` to the home directory and relative paths against the index directory. Load only matching files.
+Use site or repository instructions supplied by the caller. If the caller provides a path, read it and apply only the matching instructions. If a wrapper has already loaded matching context, use that context. Do not search fixed user paths or infer site rules from unrelated files. Without supplied context, use the generic workflow below.
 
-Match the requested URL, repository, or named app, not unrelated open tabs. Recheck matches before switching sites. Apply site-specific target, authentication, and context rules alongside the safety rules below. If a matching file is missing or matches conflict, ask before proceeding. Without an index or match, use the generic workflow.
+Match the requested URL, repository, or named app, not unrelated open tabs. Recheck matches before switching sites. If supplied instructions are missing or conflict, ask before proceeding.
 
-## 2. Establish target and baseline
+## 1. Establish target and baseline
 
 Use the user's target URL, otherwise the matching local instructions or the repository's documented dev URL. Ask if none is clear. Confirm reachability and required context; report blockers rather than guessing another environment.
 
@@ -22,7 +22,7 @@ Before changing source code or performing the test interaction, record relevant 
 
 Keep baseline evidence separate from later runs. Compare equivalent context, actions, and observation windows.
 
-## 3. Test, diagnose, verify
+## 2. Test, diagnose, verify
 
 - Inspect live page state before acting. Prefer accessible labels, roles, and current element IDs over guessed selectors; refresh stale snapshots.
 - Run the requested journey and compare visible outcomes with expectations. For bugs, reproduce before diagnosing; change source only when requested, then repeat the same journey.
