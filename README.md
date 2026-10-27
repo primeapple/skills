@@ -36,3 +36,10 @@ Review code changes with evidence-backed, actionable findings and a bias toward 
 ```sh
 npx skills add primeapple/skills -g --skill code-review
 ```
+
+## `agents-wishlist`
+Collect environment and infrastructure needs agents hit, with evidence and possible fixes in a local Markdown wish list.
+
+```sh
+npx skills add primeapple/skills -g --skill agents-wishlist
+```
