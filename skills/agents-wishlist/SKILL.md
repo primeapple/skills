@@ -11,8 +11,8 @@ Use when a task is blocked by the machine, sandbox, network policy, or shared in
 
 1. **Confirm the blocker.** Capture the exact command or resource and error. Check project instructions and available documented alternatives first. A typo, expected test failure, or fixable project configuration issue is not an infrastructure blocker.
 2. **Try only low-cost workarounds.** Use safe, documented alternatives that need no extra access, installation, policy change, or significant effort. If no easy workaround resolves the blocker, stop the blocked task and ask the user what to do. Continue only after the blocker is resolved or the user directs a different path.
-3. **Record the need** in `agents-wishlist.md` under the local state directory:
-   - Use `$XDG_STATE_HOME/agents-wishlist.md` when set; otherwise use `~/.local/state/agents-wishlist.md`.
+3. **Record the need** in `agents-wishlist/wishlist.md` under the local state directory:
+   - Use `$XDG_STATE_HOME/agents-wishlist/wishlist.md` when set; otherwise use `~/.local/state/agents-wishlist/wishlist.md`.
    - Create the state directory and file if needed. Append; do not replace or rewrite prior entries.
    - Before writing, scan for an earlier entry describing the same problem. For a recurrence, reference that entry by timestamp and record only the new timestamp and meaningful changes (such as new impact, evidence, workaround, or potential fix). Do not repeat details already recorded.
    - If the state path is unavailable or unwritable, report that and include the minimal entry in the task response instead.
